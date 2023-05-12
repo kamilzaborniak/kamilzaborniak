@@ -1,0 +1,597 @@
+## app.R ##
+library(shiny)
+library(shinydashboard)
+library(RPostgreSQL)
+library(RPostgres)
+pg <- dbDriver("PostgreSQL")
+
+user <- "kamilz"
+pass <- "dobazy"
+h <- "localhost"
+port <- 5432
+database <- 'projekt'
+
+con <- dbConnect(RPostgres::Postgres(), user=user, password=pass,
+                 host=h, port=port,
+                 dbname=database)
+kraje <- dbGetQuery(con, "SELECT DISTINCT panstwo FROM hotele;")
+kraje <- kraje$panstwo
+cena_przedzial <-dbGetQuery(con, "SELECT MIN(cena_za_noc), MAX(cena_za_noc)  FROM oferty;")
+liczbaos <-  dbGetQuery(con, "SELECT DISTINCT liczba_osob_w_pokoju FROM oferty;")
+liczbaos <- sort(liczbaos$liczba_osob_w_pokoju)
+typ_pobytu <- dbGetQuery(con, "SELECT DISTINCT typ_pobytu FROM oferty;")
+typ_pobytu<-typ_pobytu$typ_pobytu
+id_klinta_ever <- dbGetQuery(con, "SELECT DISTINCT MIN(id_klienta), MAX(id_klienta) FROM spis_klientow;")
+spisBiur <- dbGetQuery(con, "SELECT DISTINCT nazwa_biura FROM spis_obslugi;")
+spisBiur <- spisBiur$nazwa_biura
+
+dbDisconnect(con)
+
+
+# ===== sidebar =====
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    # ===== KLIENT ======
+    menuItem("Klient",
+             tabName = "klient",
+             menuSubItem("Twoje konto klienta", 
+                         tabName = "twoje_konto_klienta"),
+             menuSubItem("Szukaj podróży",
+                         tabName = "szukaj_podrozy"),
+             menuSubItem("Oceń hotel",
+                         tabName = "ocen_hotel"),
+             menuSubItem("Oceń obsługę biura",
+                         tabName = "ocen_obsluge"),
+             
+             menuSubItem("Zarejestruj",
+                         tabName = "zarejestruj")
+             #icon = icon("dashboard")
+    ),
+    # ===== PRACOWNIK =====
+    menuItem("Pracownik", #icon = icon("th"),
+             tabName = "pracownik",
+             # ===== OBSLUGA =====
+             menuItem("Obsługa",
+                      tabName = "obsluga",
+                      menuSubItem("Twoje konto pracownika", 
+                                  tabName = "twoje_konto_pracownika"),
+                      menuSubItem("Rejestruj Klienta",
+                                  tabName = "rejetruj_klienta"
+                                  ),
+                      menuSubItem("Sprzedaj podróż",
+                                  tabName = "sprzedaj_podroz")
+                      ),
+             # ===== KIEROWNIK =====
+              menuItem("Kierownik",
+                      tabName = "kierownik",
+                      menuSubItem("Twoje biuro", 
+                                  tabName = "twoje_biuro"),
+                      menuSubItem("Zatrudnij pracownka",
+                                  tabName = "zatrudnij_pracownika"),
+                      menuSubItem("Zwolnij pracownka",
+                                  tabName = "zwolnij_pracownika"),
+                      menuSubItem("Dodaj promocje",
+                                  tabName = "dodaj_promocje"),
+                      menuSubItem("Dodaj Lot", 
+                                  tabName = "dodaj_lot")
+                      )
+    ),
+    # ===== WLASCICIEL ======
+    menuItem("Właściciel sieci",
+             tabName = "wlasciciel",
+             menuSubItem("Twoja sieć",
+                         tabName = "twoja_siec"),
+             menuSubItem("Dodaj nową lokalzacje",
+                         tabName = "dodaj_nowa_lokalizacje"),
+             menuSubItem("Zatrudnij kierownika", 
+                         tabName = "zatrudnij_kierownika"),
+             menuSubItem("Zwolnij kierownika",
+                         tabName = "zwolnij_kierownika"),
+             menuSubItem("Dodaj hotel do oferty",
+                         tabName = "dodaj_hotel_do_oferty")
+    )
+  )
+)
+# ===== body ====
+body <- dashboardBody(
+  tabItems(
+    # ===== KLIENT =====
+    # ===== twoje konto =====
+    tabItem(tabName = "twoje_konto_klienta",
+            
+            fluidRow(
+              box(background = "black",
+                numericInput("loguj_by_klient",
+                             "Numer klienta: ",
+                             value=id_klinta_ever$min[1],
+                             min = id_klinta_ever$min[1],
+                             max= id_klinta_ever$max[1],
+                             step = 1),
+                actionButton("zatwierdz_id_klient_by_klient",
+                             "Zatwierdź",
+                             status = "success")
+              )
+            ),
+            fluidRow(
+              # A static infoBox
+              infoBoxOutput("saldo_konta"),
+              # Dynamic infoBoxes
+              infoBoxOutput("liczba_podorzy"),
+              infoBoxOutput("wydane_pieniadze")
+            ),
+            fluidRow(
+              box(
+                numericInput("saldo_by_klient",
+                             "Wprowadź kwotę",0, min = 0),
+                actionButton("zatwierdz_saldo_klient_by_klient",
+                             "Zatwierdź",
+                             status = "success")
+              )
+            )
+    ),
+    # ====== szukaj podrozy =======
+    tabItem(tabName = "szukaj_podrozy",
+            fluidRow(
+              column(9,
+                fluidRow(
+                  box(width = 12,
+                    tableOutput("oferty_to_klient"))
+                    ),
+                fluidRow(
+                  box(width = 12,
+                    tableOutput("loty_by_klient")
+                    )),
+                fluidRow(
+                  box(width=5,
+                      textInput("id_klienta_tosale",
+                                "ID klienta"),
+                      textInput("id_oferty_tosale",
+                                "ID oferty"),
+                      textInput("id_lotu_do_tosale",
+                                "ID lotu do"),
+                      textInput("id_lotu_z_tosale", 
+                                "ID lotu z"),
+                      sliderInput("szt_biletow",
+                                  "Liczba biletów lotniczych",
+                                  value = 1,
+                                  min=0,max = 10),
+                      actionButton("wylicz_cene_byklient",
+                                   "Cena"),br(),
+                      textOutput("cena"),br(),br(),
+                      actionButton("kup", "KUPUJ")
+                    )
+                  )
+                )
+              ,
+              
+              column(3,
+              box(width = 12,
+                selectInput("kraj_by_klient", 
+                            label = "Wybierz kraj",
+                            choices = kraje,
+                            selected = "Percent White"),
+                sliderInput("cena_by_klient",
+                            labe="Cena pokoju za noc:",
+                            min=cena_przedzial$min,
+                            max=cena_przedzial$max,
+                            value =  c(cena_przedzial$min,
+                              cena_przedzial$max)
+                            ),
+                selectInput("liczbaosob_by_klient", 
+                            label = "Ile osób w pokoju",
+                            choices = liczbaos,
+                            selected = "Percent White"),
+                selectInput("typ",
+                            label="Wybierz typ pobytu",
+                            choices=typ_pobytu,
+                            selected = "Percent White"),
+                radioButtons("czylot_byklinet",
+                             label = "Dodaj lot",
+                             choices = list("własny transport"=1,
+                                            "Lot do" = 2,
+                                            "Lot z" = 3,
+                                            "W obie strony" =4),
+                             selected = 1),
+                dateRangeInput("okres_pobytu_by_klient",
+                               label="Okres pobytu:",
+                               min = Sys.Date()+3,
+                               max = Sys.Date()+33,
+                               start = Sys.Date()+3,
+                               end = Sys.Date()+10),
+                actionButton("filtruj_podroz_by_klient",
+                             "Filtruj",
+                              status = "success")
+                
+                )
+              )
+            
+            
+    )),
+    # ====== ocen hotel ======
+    tabItem(tabName = "ocen_hotel",
+            h2("ocen hotel")
+    ),
+    # ====== ocen obsługę ======
+    tabItem(tabName = "ocen_obsluge",
+            
+            fluidRow(box(width = 2,
+              numericInput("loguj_by_klient_to_ocena",
+                           "Numer klienta: ",
+                           value=id_klinta_ever$min[1],
+                           min = id_klinta_ever$min[1],
+                           max= id_klinta_ever$max[1],
+                           step = 1),
+              actionButton("Zatwierdzklienttoocena", "LOGUJ"))
+            ),
+            fluidRow(
+              column(5,
+              box(width = 12,
+                  tableOutput("obluga_to_ocena_by_klient"))
+              ),
+            column(5,
+            box(
+            textInput("nr_biura_to_ocen",
+                         "Podaj email pracownika: ",
+                         ),
+            sliderInput("ocenaobslygibyklient",
+                        "Ocena",1,10,10),
+            actionButton("Zatwierdzocene", "Zatwierdź"))))
+            
+            
+    ),
+    # ======= zarejestruj =======
+    tabItem(tabName = "zarejestruj",
+            
+            box(
+              title = "Podaj swoje dane", background = "black",
+              textInput("imie_klient_by_klient", "Imię:"),
+              textInput("nazwisko_klient_by_klient",
+                        "Nazwisko:"),
+              textInput("email_klient_by_klient", "E-mail:"),
+              textInput("tel_klient_by_klient", "Telefon:"),
+              actionButton("rejestruj_klient_by_klient",
+                           "REJESTRUJ"),
+                           status = "success")
+            ),
+    # ===== PRACOWNIK =====
+      # ===== OBSLUGA =====
+    tabItem(tabName = "twoje_konto_pracownika",
+            h2("Widgets tab content")
+    ),
+    tabItem(tabName = "rejetruj_klienta",
+            h2("rejetruj_klienta")
+    ),
+    tabItem(tabName = "sprzedaj_podroz",
+            h2("sprzedaj_podroz")
+    ),
+      # ===== KIEROWNIK =====
+    tabItem(tabName = "twoje_biuro",
+            fluidRow(
+              column(3,
+              box(width = 12,
+                selectInput("id_biura_tokontokierownika",
+                            label = "Wybierz swoje biuro",
+                            choices = spisBiur),
+                actionButton("zatwierdz_biuro_twojebiuro",
+                             "Wybierz"),
+                tableOutput("pracownicy_wtwojebiuro")
+              )),
+              column(9,
+                     box(width = 4,
+                     dateInput("datadoobliczeniadochodubiura"
+                               ,label="Data",
+                               max = Sys.Date(),
+                               value = Sys.Date()),
+                     actionButton("zatwierdzdatedodochodow",
+                                  label="Zatwierdź")),
+                     box(width = 12,
+                     infoBoxOutput("Dzisiejszy_dochod"),
+                     
+                     infoBoxOutput("dochod_dodzisiaj"),
+                     infoBoxOutput("utrzyamniebiura"))
+                     )
+              )
+            
+    ),
+    tabItem(tabName = "zatrudnij_pracownika",
+            h2("zatrudnij_pracownikaj")
+    ),
+    tabItem(tabName = "zwolnij_pracownika",
+            h2("zwolnij_pracownika")
+    ),
+    tabItem(tabName = "dodaj_promocje",
+            h2("odaj_promocje")
+    ),
+    tabItem(tabName = "dodaj_lot",
+            h2("dodaj_lot")
+    ),
+    # ===== WLASCICIEL =====
+    tabItem(tabName = "twoja_siec",
+            h2("twoja_siec")
+    ),
+    tabItem(tabName = "dodaj_nowa_lokalizacje",
+            h2("dodaj_nowa_lokalizacje")
+    ),
+    tabItem(tabName = "zatrudnij_kierownika",
+            h2("zwolnij_pracownika")
+    ),
+    tabItem(tabName = "zwolnij_kierownika",
+            h2("zwolnij_kierownika")
+    ),
+    tabItem(tabName = "dodaj_hotel_do_oferty",
+            h2("dodaj_hotel_do_oferty")
+    )
+  ))
+
+
+
+# =========
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Użytkownik"),
+  sidebar,
+  body
+)
+
+server <- function(input, output) {
+  
+  
+  observeEvent(input$rejestruj_klient_by_klient, {
+    con <- dbConnect(RPostgres::Postgres(),
+                     user=user, password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    #id_k <- dbGetQuery(con, "SELECT max(id_klienta) FROM spis_klientow;")[1,1]+1
+    data <- list(input$imie_klient_by_klient,
+                 input$nazwisko_klient_by_klient,
+                 input$email_klient_by_klient,
+                 input$tel_klient_by_klient)
+    qry =paste0("INSERT INTO public.klienci (imie, nazwisko, email, nr_tel, portfel) VALUES('",data[[1]][1],"','",
+                data[[2]][1],"','",data[[3]][1],
+                "',",data[[4]][1],",0);")
+    dbSendQuery(conn = con, statement = qry)
+    showModal( modalDialog( title=paste0("Zaktualizowano baze klientów"),
+                            br(),
+                            div(tags$b(paste0("Pomyślnie zarejestrowano klienta"), style = "color: green;"))
+    ))
+    dbDisconnect(con)
+  })
+  ##### zmiana salda
+  observeEvent(input$zatwierdz_saldo_klient_by_klient, {
+    con <- dbConnect(RPostgres::Postgres(), user=user, password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    nr_klienta<- input$loguj_by_klient
+    data <- input$saldo_by_klient
+    id_k <- dbGetQuery(con, "SELECT max(id_klienta) FROM spis_klientow;")[1,1]
+    if(nr_klienta>id_k){ return()}
+    if(data<=0){ return()}
+    qry =paste0("UPDATE public.klienci SET portfel=portfel+",data," WHERE id_klienta=",nr_klienta,";")
+    dbSendQuery(conn = con, statement = qry)
+    showModal( modalDialog( title=paste0("Zaktualizowałeś portfel"),
+                            br(),
+                            div(tags$b(paste0("Pomyślnie zarejestrowano klienta"), style = "color: green;"))
+    ))
+    dbDisconnect(con)
+  })
+  ##### loguj klient
+  observeEvent(input$zatwierdz_id_klient_by_klient,{
+  nr_klienta<- input$loguj_by_klient
+  con <- dbConnect(RPostgres::Postgres(), user=user,
+                   password=pass,
+                   host=h, port=port,
+                   dbname=database)
+    ssaldo <- dbGetQuery(con,  statement=paste0("SELECT portfel FROM public.spis_klientow WHERE id_klienta=",nr_klienta,";"))[1,1]
+    info <- dbGetQuery(con, statement = paste0("SELECT klientInfo(",nr_klienta,");"))
+    info <- strtoi(strsplit(info$klientinfo, split=' ')[[1]])
+    dbDisconnect(con)
+  output$saldo_konta <- renderInfoBox({
+    infoBox("Saldo konta", ssaldo, icon = icon("credit-card"))
+  })
+  output$liczba_podorzy <- renderInfoBox({
+    infoBox("Liczba podróży", info[1], icon = icon("paper-plane"))
+  })
+  output$wydane_pieniadze <- renderInfoBox({
+    infoBox("Wydane pieniądze", info[2], icon = icon("money-bill-wave"))
+  })
+  })
+  
+  ##### filtruj podroz
+  observeEvent(input$filtruj_podroz_by_klient, {
+    con <- dbConnect(RPostgres::Postgres(), user=user,
+                     password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    
+    kraj <- input$kraj_by_klient
+    print(kraj)
+    data <- input$saldo_by_klient
+    ileosob <- input$liczbaosob_by_klient
+    czylot<-strtoi(input$czylot_byklinet)
+    print(czylot)
+     #wektor
+    cena<-input$cena_by_klient #wektor
+    print(cena)
+    typ <- input$typ
+    if(czylot==2){
+      loty <- dbGetQuery(con,  statement=paste0("SELECT id_lotu, miejce_wylotu, data_wylotu, godzina_wylotu, miejsce_przylotu ,data_przylotu, godzina_przylotu, linie_lotnicze, cena FROM public.loty WHERE panstwo_przylotu='",kraj,"';"))
+      
+      loty$data_wylotu<-as.character(loty$data_wylotu)
+      loty$godzina_wylotu <- as.character(loty$godzina_wylotu)
+      loty$data_przylotu <-as.character(loty$data_przylotu)
+      loty$godzina_przylotu <-as.character(loty$godzina_przylotu)
+      output$loty_by_klient <- renderTable(loty)
+    } else if(czylot==3){
+      loty <- dbGetQuery(con,  statement=paste0("SELECT id_lotu, miejce_wylotu, data_wylotu, godzina_wylotu, miejsce_przylotu ,data_przylotu,godzina_przylotu, linie_lotnicze, cena FROM public.loty WHERE panstwo_wylotu='",kraj,"';"))
+      
+      loty$data_wylotu<-as.character(loty$data_wylotu)
+      loty$godzina_wylotu <- as.character(loty$godzina_wylotu)
+      loty$data_przylotu <-as.character(loty$data_przylotu)
+      loty$godzina_przylotu <-as.character(loty$godzina_przylotu)
+      output$loty_by_klient <- renderTable(loty)
+    }
+    else if(czylot==4){
+      loty <- dbGetQuery(con,  statement=paste0("SELECT id_lotu, miejce_wylotu, data_wylotu, godzina_wylotu, miejsce_przylotu ,data_przylotu, godzina_przylotu, linie_lotnicze, cena FROM public.loty WHERE (panstwo_wylotu='",kraj,"' OR panstwo_przylotu='",kraj,"');"))
+      
+      loty$data_wylotu<-as.character(loty$data_wylotu)
+      loty$godzina_wylotu <- as.character(loty$godzina_wylotu)
+      loty$data_przylotu <-as.character(loty$data_przylotu)
+      loty$godzina_przylotu <-as.character(loty$godzina_przylotu)
+      output$loty_by_klient <- renderTable(loty)
+    }else{
+      loty<-data.frame()
+      output$loty_by_klient <- renderTable(loty)
+    }
+    oferts <- dbGetQuery(con, statement = paste0("SELECT oferty.id_oferty AS ID, hotele.nazwa AS nazwa, hotele.liczba_gwiazdek AS gwiazdki, hotele.suma_punktow/hotele.liczba_opini AS opinia , hotele.miasto AS miasto, oferty.cena_za_noc FROM hotele, oferty WHERE hotele.id_hotelu=oferty.id_hotelu AND hotele.panstwo='",kraj,"' AND oferty.cena_za_noc>=",cena[1]," AND oferty.cena_za_noc<=", cena[2]," AND  oferty.liczba_osob_w_pokoju=",ileosob," AND oferty.typ_pobytu='",typ,"'  ;"))
+  print(oferts)
+  output$oferty_to_klient <- renderTable(oferts)
+
+    
+dbDisconnect(con)
+    
+  })
+  ##### TODO kupuj podorz
+    
+  observeEvent(input$wylicz_cene_byklient,{
+    id_klienta_zeby_kupic<-as.numeric(input$id_klienta_tosale)
+    id_oferty_zebykupic<-as.numeric(input$id_oferty_tosale)
+    idlotudo_zebykupic<-as.numeric(input$id_lotu_do_tosale)
+    idlotuz_zebykupic<-as.numeric(input$id_lotu_z_tosale)
+    sztuk_biletowlotniczych_zebykupic<-input$szt_biletow
+    okres_pobytu<-input$okres_pobytu_by_klient
+    czylot<-strtoi(input$czylot_byklinet)
+    con <- dbConnect(RPostgres::Postgres(), user=user,
+                   password=pass,
+                   host=h, port=port,
+                   dbname=database)
+    cenalotudo<-0
+    if(czylot==2 || czylot==4){
+    cenalotudo<-dbGetQuery(con,  statement=paste0("SELECT cena FROM public.loty WHERE (id_lotu=",idlotudo_zebykupic,");"))[1,1]*sztuk_biletowlotniczych_zebykupic}
+    cenalotuz<-0
+    if(czylot==3||czylot==4){
+    cenalotuz<-dbGetQuery(con,  statement=paste0("SELECT cena FROM public.loty WHERE (id_lotu=",idlotuz_zebykupic,");"))[1,1]*sztuk_biletowlotniczych_zebykupic}
+    cena_pokoju<-dbGetQuery(con, statement=paste0("SELECT cena_za_noc FROM public.oferty WHERE (id_oferty=",id_oferty_zebykupic,");"))[1,1]*abs(as.numeric(difftime(okres_pobytu[2], okres_pobytu[1], units = "days")))
+    dbDisconnect(con)
+    
+    output$cena <- renderText({paste("Cena ostateczna: ",cenalotudo+cenalotuz+cena_pokoju)})
+  })
+  
+  observeEvent(input$kup, {
+    id_klienta_zeby_kupic<-as.numeric(input$id_klienta_tosale)
+    id_oferty_zebykupic<-as.numeric(input$id_oferty_tosale)
+    idlotudo_zebykupic<-as.numeric(input$id_lotu_do_tosale)
+    idlotuz_zebykupic<-as.numeric(input$id_lotu_z_tosale)
+    sztuk_biletowlotniczych_zebykupic<-input$szt_biletow
+    okres_pobytu<-input$okres_pobytu_by_klient
+    czylot<-strtoi(input$czylot_byklinet)
+    
+    con <- dbConnect(RPostgres::Postgres(), user=user,
+                     password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    cenalotudo<-0
+    if(czylot==2 || czylot==4){
+      cenalotudo<-dbGetQuery(con,  statement=paste0("SELECT cena FROM public.loty WHERE (id_lotu=",idlotudo_zebykupic,");"))[1,1]*sztuk_biletowlotniczych_zebykupic}
+    cenalotuz<-0
+    if(czylot==3||czylot==4){
+      cenalotuz<-dbGetQuery(con,  statement=paste0("SELECT cena FROM public.loty WHERE (id_lotu=",idlotuz_zebykupic,");"))[1,1]*sztuk_biletowlotniczych_zebykupic}
+    cena_pokoju<-dbGetQuery(con, statement=paste0("SELECT cena_za_noc FROM public.oferty WHERE (id_oferty=",id_oferty_zebykupic,");"))[1,1]*abs(as.numeric(difftime(okres_pobytu[2], okres_pobytu[1], units = "days")))
+    
+    qry =paste0("INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, data_zakupu) VALUES(1,",id_klienta_zeby_kupic,","
+                ,id_oferty_zebykupic,",", abs(as.numeric(difftime(okres_pobytu[2], okres_pobytu[1], units = "days"))),",",
+                idlotudo_zebykupic,",",idlotuz_zebykupic,",'",
+                okres_pobytu[1],"','",okres_pobytu[2],"',",
+                cenalotudo+cenalotuz+cena_pokoju,",",
+                sztuk_biletowlotniczych_zebykupic,",",
+                sztuk_biletowlotniczych_zebykupic,",'",
+                Sys.Date(),"');")
+    print(qry)
+    dbSendQuery(conn = con, statement = qry)
+    port <- dbGetQuery(con, paste0("SELECT portfel FROM public.spis_klientow WHERE id_klienta=",id_klienta_zeby_kupic,";"))[1,1]
+    if((cenalotudo+cenalotuz+cena_pokoju)<port){
+    qry =paste0("UPDATE public.klienci SET portfel=portfel-",
+                (cenalotudo+cenalotuz+cena_pokoju)," WHERE id_klienta=",id_klienta_zeby_kupic,";")
+    dbSendQuery(conn = con, statement = qry)
+    }else{
+      showModal( modalDialog( title=paste0("Doładuj konto!"))
+      )
+    }
+    
+    dbDisconnect(con)
+    
+    
+  })
+  
+  observeEvent(input$Zatwierdzklienttoocena,{
+    nr_klienta<- input$loguj_by_klient_to_ocena
+    
+    con <- dbConnect(RPostgres::Postgres(), user=user,
+                     password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    pracownicy <- dbGetQuery(con,  statement=paste0("SELECT DISTINCT spis_obslugi.nazwa_biura, spis_obslugi.imie, spis_obslugi.nazwisko, spis_obslugi.email FROM spis_obslugi, zakupy WHERE (zakupy.id_klienta=",nr_klienta," AND zakupy.id_biura=spis_obslugi.id_biura);"))
+    output$obluga_to_ocena_by_klient <- renderTable(pracownicy)
+    dbDisconnect(con)
+  })
+ observeEvent(input$Zatwierdzocene,{
+   con <- dbConnect(RPostgres::Postgres(), user=user,
+                    password=pass,
+                    host=h, port=port,
+                    dbname=database)
+   email <- input$nr_biura_to_ocen
+   ocena <- input$ocenaobslygibyklient
+   
+   qry =paste0("UPDATE public.pracownicy SET lliczba_opini=lliczba_opini+1, suma_punktow=suma_punktow+",ocena," WHERE email='",email,"';")
+   dbSendQuery(conn = con, statement = qry)
+   
+   
+   dbDisconnect(con)
+   
+ })
+ 
+  observeEvent(input$zatwierdz_biuro_twojebiuro, {
+    nazwa<- input$id_biura_tokontokierownika
+    
+    con <- dbConnect(RPostgres::Postgres(), user=user,
+                     password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    
+    prac <- dbGetQuery(con,  statement=paste0("SELECT imie, nazwisko, opinia FROM spis_obslugi WHERE (nazwa_biura='",nazwa,"') ORDER BY opinia DESC;"))
+    
+    output$pracownicy_wtwojebiuro <- renderTable(prac)
+    dbDisconnect(con)
+  
+  
+  observeEvent(input$zatwierdzdatedodochodow,{
+    data<- input$datadoobliczeniadochodubiura
+    con <- dbConnect(RPostgres::Postgres(), user=user,
+                     password=pass,
+                     host=h, port=port,
+                     dbname=database)
+    id <- dbGetQuery(con,  statement=paste0("SELECT id_biura FROM biura WHERE (nazwa='",nazwa,"');"))[1,1]
+    dochodnadzis<-dbGetQuery(con, statement=paste0("SELECT dochody_biura_na_dzien(",id,",'",data,"');"))[1,1]
+    dochodydodzis<-dbGetQuery(con, statement=paste0("SELECT dochody_biura_do_dnia(",id,",'",data,"');"))[1,1]
+    utrzymanie <- dbGetQuery(con, statement=paste0("SELECT SUM(wynagrodzenie) FROM pracownicy WHERE (id_biura=",id,");"))
+    utrzymanie <- utrzymanie$sum[1]
+    dbDisconnect(con)
+    
+    output$Dzisiejszy_dochod <- renderInfoBox({
+      infoBox("Dochód na ten dzień", dochodnadzis, icon = icon("money-bill-alt"))})
+    output$dochod_dodzisiaj <- renderInfoBox({
+      infoBox("Dochód do tego dnia", dochodydodzis, icon = icon("wallet"))})
+    output$utrzyamniebiura <- renderInfoBox({
+      infoBox("Miesięczne utrzymanie biura", utrzymanie, icon = icon("coins"))})
+    
+  })
+  })
+  
+  
+   
+}
+
+
+shinyApp(ui, server)
+
+dbDisconnect(con)
+dbUnloadDriver(pg)

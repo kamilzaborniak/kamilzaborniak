@@ -1,0 +1,308 @@
+-- BIURA
+CREATE TABLE public.biura (
+	id_biura serial4 NOT NULL,
+	nazwa text NULL,
+	miasto varchar(30) NULL,
+	CONSTRAINT biura_nazwa_key UNIQUE (nazwa),
+	CONSTRAINT biura_pkey PRIMARY KEY (id_biura)
+);
+INSERT INTO public.biura (id_biura, nazwa, miasto) VALUES(1, 'ONLINE', '');
+INSERT INTO public.biura (id_biura, nazwa, miasto) VALUES(2, 'Ikar', 'Warszawa');
+INSERT INTO public.biura (id_biura, nazwa, miasto) VALUES(3, 'Odys', 'Kraków');
+INSERT INTO public.biura (id_biura, nazwa, miasto) VALUES(4, 'TripIN', 'Gdańsk');
+--HOTELE
+CREATE TABLE public.hotele (
+	id_hotelu serial4 NOT NULL,
+	nazwa text NOT NULL,
+	panstwo varchar(20) NOT NULL,
+	miasto varchar(20) NOT NULL,
+	liczba_gwiazdek int4 NULL,
+	suma_punktow int4 NULL,
+	liczba_opini int4 NULL,
+	CONSTRAINT hotele_liczba_gwiazdek_check CHECK (((liczba_gwiazdek <= 5) AND (liczba_gwiazdek >= 1))),
+	CONSTRAINT hotele_liczba_gwiazdek_check1 CHECK (((liczba_gwiazdek <= 5) AND (liczba_gwiazdek >= 1))),
+	CONSTRAINT hotele_pkey PRIMARY KEY (id_hotelu)
+);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(1, 'Primasol', 'Hiszpania', 'Lloret de Mar', 3, 109, 30);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(2, 'Grecos', 'Grecja', 'Ateny', 5, 120, 25);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(3, 'Riva', 'Bulgaria', 'Zlote piaski', 3, 89, 29);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(4, 'San Antonio', 'Turcja', 'Antalya', 4, 115, 31);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(5, 'SuperHotel', 'Wlochy', 'Rimini', 4, 50, 15);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(6, 'Beach Hotel', 'Hiszpania', 'Lloret de Mar', 5, 170, 36);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(7, 'Extra', 'Bulgaria', 'Sloneczny Brzeg', 3, 102, 27);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(8, 'Coral', 'Grecja', 'Ateny', 4, 150, 40);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(9, 'Bella', 'Wlochy', 'Rzym', 5, 123, 32);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(10, 'Aqua', 'Chorwacja', 'Split', 3, 98, 25);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(11, 'Grand Hotel', 'Chorwacja', 'Split', 4, 140, 34);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(12, 'Luxury', 'Turcja', 'Antalya', 4, 131, 32);
+INSERT INTO public.hotele (id_hotelu, nazwa, panstwo, miasto, liczba_gwiazdek, suma_punktow, liczba_opini) VALUES(13, 'Sun', 'Hiszpania', 'Barcelona', 5, 80, 17);
+
+CREATE TABLE public.klienci (
+	id_klienta serial4 NOT NULL,
+	imie varchar(20) NULL,
+	nazwisko varchar(20) NOT NULL,
+	email varchar(20) NULL,
+	nr_tel numeric(9) NOT NULL,
+	portfel numeric(8, 2) NULL,
+	CONSTRAINT klienci_pk PRIMARY KEY (id_klienta)
+);
+CREATE UNIQUE INDEX klienci_id_klienta_idx ON public.klienci USING btree (id_klienta);
+
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(3, 'Michal', 'Krol', 'm.krol22@gmail.com', 870521025, 1000.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(4, 'Olga', 'Maj', 'omaj14@gmail.com', 789545001, 4800.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(5, 'Igor', 'Kos', 'i.kos@gmail.com', 785222366, 1500.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(6, 'Patryk', 'Las', 'las.p@gmail.com', 602899575, 5050.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(7, 'Tomasz', 'Adamczyk', 't.adam@gmail.com', 663247715, 10000.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(8, 'Karol', 'Sam', 'k.sam@gmail.com', 622599872, 6230.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(9, 'Aleksandra', 'Rak', 'a.rak11@gmail.com', 880225636, 110.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(10, 'Maja', 'Dom', 'mdom@gmail.com', 741025365, 4000.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(11, 'Jakub', 'Kowal', 'jkow99@gmail.com', 852300600, 1250.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(12, 'Michal', 'Brudny', 'm.brudny@gmail.com', 601630725, 9000.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(13, 'Oskar', 'Nowak', 'onowak@gmail.com', 800956235, 850.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(14, 'Bartosz', 'Plot', 'b.plot@gmail.com', 500998565, 12000.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(15, 'Renata', 'Sok', 'r.sok11@gmail.com', 589322100, 7000.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(16, 'Ewelina', 'Ptak', 'e.ptak@gmail.com', 855262310, 1800.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(17, 'Robert', 'Mlot', 'mlot.r@gmail.com', 511888336, 2900.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(18, 'Maciej', 'Drag', 'm.drag@gmail.com', 899555220, 4600.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(19, 'Krzysztof', 'Pies', 'k.pies@gmail.com', 822141191, 3600.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(20, 'Adam', 'Borowar', 'aboro@erd.pl', 753216948, 10.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(1, 'Anna', 'Pajak', 'a.pajak@gmail.com', 602899515, 2139.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(2, 'Tomasz', 'Kot', 't.kot@gmail.com', 556921002, 4900.00);
+INSERT INTO public.klienci (id_klienta, imie, nazwisko, email, nr_tel, portfel) VALUES(21, 'Maciek', 'S', 'ms@onet.pl', 789631524, 0.00);
+
+CREATE TABLE public.loty (
+	id_lotu serial4 NOT NULL,
+	miejce_wylotu varchar(20) NOT NULL,
+	miejsce_przylotu varchar(20) NOT NULL,
+	data_wylotu date NOT NULL,
+	godzina_wylotu time NULL,
+	data_przylotu date NOT NULL,
+	godzina_przylotu time NULL,
+	linie_lotnicze text NULL,
+	panstwo_przylotu varchar(20) NOT NULL,
+	panstwo_wylotu varchar(20) NOT NULL,
+	cena numeric(5, 2) NULL,
+	CONSTRAINT loty_check CHECK (((data_wylotu < data_przylotu) OR (data_wylotu = data_przylotu))),
+	CONSTRAINT loty_pkey PRIMARY KEY (id_lotu)
+);
+
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(1, 'Warszawa', 'Ateny', '2022-07-04', '12:30:00', '2022-07-04', '15:20:00', 'Wizzair', 'Grecja', 'Polska', 654.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(2, 'Ateny', 'Warszawa', '2022-07-16', '03:30:00', '2022-07-16', '05:40:00', 'Wizzair', 'Polska', 'Grecja', 518.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(3, 'Krakow', 'Ateny', '2022-08-11', '07:30:00', '2022-08-11', '10:55:00', 'Wizzair', 'Grecja', 'Polska', 545.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(4, 'Ateny', 'Krakow', '2022-08-19', '06:35:00', '2022-08-19', '09:40:00', 'Wizzair', 'Polska', 'Grecja', 654.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(5, 'Warszawa', 'Ateny', '2022-07-20', '11:30:00', '2022-07-20', '13:20:00', 'Wizzair', 'Grecja', 'Polska', 654.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(6, 'Ateny', 'Warszawa', '2022-07-29', '05:30:00', '2022-07-29', '07:40:00', 'Wizzair', 'Polska', 'Grecja', 348.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(7, 'Krakow', 'Barcelona', '2022-07-10', '10:15:00', '2022-07-10', '13:20:00', 'Ryanair', 'Hiszpania', 'Polska', 85.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(8, 'Barcelona', 'Krakow', '2022-07-20', '01:15:00', '2022-07-20', '03:20:00', 'Ryanair', 'Polska', 'Hiszpania', 351.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(9, 'Warszawa', 'Barcelona', '2022-08-10', '13:15:00', '2022-08-10', '16:20:00', 'Wizzair', 'Hiszpania', 'Polska', 978.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(10, 'Barcelona', 'Warszawa', '2022-08-17', '16:20:00', '2022-08-17', '18:50:00', 'Ryanair', 'Polska', 'Hiszpania', 665.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(11, 'Katowice', 'Barcelona', '2022-07-12', '10:30:00', '2022-07-12', '13:20:00', 'Ryanair', 'Hiszpania', 'Polska', 358.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(12, 'Barcelona', 'Katowice', '2022-07-21', '07:15:00', '2022-07-21', '10:20:00', 'Ryanair', 'Polska', 'Hiszpania', 654.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(13, 'Katowice', 'Barcelona', '2022-08-12', '10:30:00', '2022-08-12', '13:20:00', 'Ryanair', 'Hiszpania', 'Polska', 547.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(14, 'Barcelona', 'Katowice', '2022-08-21', '07:15:00', '2022-08-21', '10:20:00', 'Ryanair', 'Polska', 'Hiszpania', 549.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(15, 'Wroclaw', 'Warna', '2022-07-01', '17:20:00', '2022-07-01', '20:20:00', 'Ryanair', 'Bulgaria', 'Polska', 142.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(16, 'Warna', 'Wroclaw', '2022-07-09', '03:45:00', '2022-07-09', '10:20:00', 'Ryanair', 'Polska', 'Bulgaria', 874.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(17, 'Warszawa', 'Warna', '2022-07-30', '08:20:00', '2022-07-30', '11:20:00', 'Ryanair', 'Bulgaria', 'Polska', 454.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(18, 'Warna', 'Warszawa', '2022-08-09', '05:45:00', '2022-08-09', '08:20:00', 'Ryanair', 'Polska', 'Bulgaria', 158.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(19, 'Krakow', 'Antalya', '2022-07-15', '14:20:00', '2022-07-16', '17:00:00', 'Turkish airlines', 'Turcja', 'Polska', 98.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(20, 'Antalya', 'Krakow', '2022-07-23', '10:45:00', '2022-07-23', '13:20:00', 'Turkish airlines', 'Polska', 'Turcja', 354.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(21, 'Katowice', 'Antalya', '2022-08-01', '11:30:00', '2022-08-01', '14:45:00', 'Turkish airlines', 'Turcja', 'Polska', 861.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(22, 'Antalya', 'Katowice', '2022-08-09', '15:45:00', '2022-08-09', '19:00:00', 'Turkish airlines', 'Polska', 'Turcja', 456.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(23, 'Warszawa', 'Split', '2022-07-22', '10:05:00', '2022-07-22', '12:45:00', 'Wizzair', 'Chorwacja', 'Polska', 753.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(24, 'Split', 'Warszawa', '2022-07-31', '08:45:00', '2022-07-31', '11:00:00', 'Wizzair', 'Polska', 'Chorwacja', 235.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(25, 'Wroclaw', 'Split', '2022-07-03', '12:05:00', '2022-07-03', '14:45:00', 'Wizzair', 'Chorwacja', 'Polska', 65.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(26, 'Split', 'Wroclaw', '2022-07-11', '18:45:00', '2022-07-11', '21:00:00', 'Wizzair', 'Polska', 'Chorwacja', 98.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(27, 'Katowice', 'Rzym', '2022-07-07', '09:05:00', '2022-07-07', '11:45:00', 'Wizzair', 'Wlochy', 'Polska', 741.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(28, 'Rzym', 'Katowice', '2022-07-16', '17:45:00', '2022-07-16', '20:00:00', 'Wizzair', 'Polska', 'Chorwacja', 843.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(29, 'Krakow', 'Rzym', '2022-08-15', '07:15:00', '2022-08-15', '09:45:00', 'Ryanair', 'Wlochy', 'Polska', 54.00);
+INSERT INTO public.loty (id_lotu, miejce_wylotu, miejsce_przylotu, data_wylotu, godzina_wylotu, data_przylotu, godzina_przylotu, linie_lotnicze, panstwo_przylotu, panstwo_wylotu, cena) VALUES(30, 'Rzym', 'Krakow', '2022-08-24', '15:00:00', '2022-08-24', '17:25:00', 'Ryanair', 'Polska', 'Wlochy', 981.00);
+
+CREATE TABLE public.oferty (
+	id_oferty serial4 NOT NULL,
+	nr_w_menu_hotelu int4 NOT NULL,
+	id_hotelu int4 NOT NULL,
+	liczba_osob_w_pokoju int4 NULL,
+	typ_pobytu varchar(20) NULL,
+	cena_za_noc numeric(5, 2) NOT NULL,
+	CONSTRAINT oferty_liczba_osob_w_pokoju_check CHECK ((liczba_osob_w_pokoju > 0)),
+	CONSTRAINT oferty_pkey PRIMARY KEY (id_oferty)
+);
+ALTER TABLE public.oferty ADD CONSTRAINT oferty_id_hotelu_fkey FOREIGN KEY (id_hotelu) REFERENCES public.hotele(id_hotelu) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(1, 1, 1, 2, 'all inclusive', 200.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(2, 2, 1, 3, 'all inclusive', 250.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(3, 3, 2, 2, 'all inclusive', 300.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(4, 1, 3, 2, 'BB', 150.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(5, 2, 3, 4, 'BB', 230.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(6, 1, 4, 2, 'all inclusive', 350.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(7, 2, 4, 1, 'all inclusive', 300.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(8, 3, 4, 3, 'all inclusive', 370.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(9, 1, 5, 2, 'HB', 270.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(10, 2, 5, 2, 'BB', 240.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(11, 1, 6, 2, 'HB', 310.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(12, 2, 6, 1, 'HB', 220.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(13, 3, 6, 1, 'BB', 280.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(14, 4, 6, 2, 'BB', 200.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(15, 1, 7, 2, 'all inclusive', 290.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(16, 2, 7, 3, 'all inclusive', 330.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(17, 1, 8, 2, 'all inclusive', 420.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(18, 1, 9, 1, 'BB', 170.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(19, 2, 9, 2, 'BB', 250.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(20, 1, 10, 2, 'all inclusive', 280.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(21, 2, 10, 2, 'BB', 150.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(22, 3, 10, 3, 'all inclusive', 330.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(23, 4, 10, 3, 'BB', 200.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(24, 1, 11, 2, 'HB', 120.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(25, 2, 11, 3, 'HB', 190.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(26, 3, 11, 1, 'HB', 100.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(27, 4, 11, 2, 'HB', 120.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(28, 1, 12, 2, 'all inclusive', 260.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(29, 2, 12, 1, 'all inclusive', 200.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(30, 1, 13, 2, 'all inclusive', 320.00);
+INSERT INTO public.oferty (id_oferty, nr_w_menu_hotelu, id_hotelu, liczba_osob_w_pokoju, typ_pobytu, cena_za_noc) VALUES(31, 2, 13, 2, 'BB', 220.00);
+-- PRACOWNICY
+CREATE TABLE public.pracownicy (
+	id_biura int4 NOT NULL,
+	imie text NOT NULL,
+	nazwisko text NOT NULL,
+	data_zatrudnienia date NOT NULL,
+	stanowisko text NOT NULL,
+	suma_punktow int4 NULL,
+	lliczba_opini int4 NULL,
+	email varchar(20) NOT NULL,
+	wynagrodzenie int4 NOT NULL,
+	CONSTRAINT pracownicy_pk PRIMARY KEY (email)
+);
+ALTER TABLE public.pracownicy ADD CONSTRAINT pracownicy_id_biura_fkey FOREIGN KEY (id_biura) REFERENCES public.biura(id_biura) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(2, 'Marta', 'Wita', '2021-03-10', 'obsługa', 32409, 4780, 'MW_obsł@ikar.pl', 3100);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(2, 'Aleksandra', 'Hes', '2021-03-16', 'obsługa', 32139, 5048, 'AH_obsł@ikar.pl', 3000);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(2, 'Arek', 'Fata', '2021-06-15', 'obsługa', 6071, 610, 'AF_obsł@ikar.pl', 2600);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(4, 'Alicja', 'Hier', '2021-11-21', 'kierownik', NULL, NULL, 'AH_kier@tripin.pl', 3800);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(3, 'Wiktor', 'Mak', '2021-05-14', 'obsługa', 7, 1, 'WM_obsł@odys.pl', 3000);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(3, 'Marek', 'August', '2021-05-30', 'obsługa', 7, 1, 'MA_obsł@odys.pl', 2800);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(3, 'Ela', 'For', '2021-09-16', 'obsługa', 8, 2, 'EF_obsł@odys.pl', 2500);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(4, 'Fiona', 'Nol', '2021-11-29', 'obsługa', 15, 2, 'FN_obsł@tripin.pl', 2700);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(1, 'Bot', 'Internetowy', '2021-01-01', 'obsługa', 654642, 69860, 'online_bot@biuro.pl', 0);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(2, 'Wiola', 'Wit', '2021-03-01', 'kierownik', NULL, NULL, 'WW_kier@tripin.pl', 4200);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(3, 'Aleksander', 'Ow', '2021-04-12', 'kieownik', NULL, NULL, 'AO_kier@odys.pl', 6548);
+INSERT INTO public.pracownicy (id_biura, imie, nazwisko, data_zatrudnienia, stanowisko, suma_punktow, lliczba_opini, email, wynagrodzenie) VALUES(2, 'Aleksandra', 'Nowak', '2021-03-01', 'kierownik', NULL, NULL, 'an_kier@ikar.pl', 5000);
+
+-- -- public.zakupy definition
+
+-- Drop table
+
+
+CREATE TABLE public.zakupy (
+	id_biura int4 NOT NULL,
+	id_klienta int4 NOT NULL,
+	id_oferty int4 NULL,
+	liczba_nocy int4 NULL,
+	id_lotu_do int4 NULL,
+	id_lotu_z int4 NULL,
+	poczatek_pobytu date NOT NULL,
+	koniec_pobytu date NOT NULL,
+	cena numeric(7, 2) NOT NULL,
+	liczba_biletow_do int4 NULL,
+	liczba_biletow_z int4 NULL,
+	id_transakcji serial4 NOT NULL,
+	data_zakupu date NOT NULL,
+	CONSTRAINT zakupy_check CHECK ((poczatek_pobytu < koniec_pobytu)),
+	CONSTRAINT zakupy_check1 CHECK ((poczatek_pobytu < koniec_pobytu)),
+	CONSTRAINT zakupy_pk PRIMARY KEY (id_transakcji)
+);
+
+ALTER TABLE public.zakupy ADD CONSTRAINT zakupy__id_klienta FOREIGN KEY (id_klienta) REFERENCES public.klienci(id_klienta);
+ALTER TABLE public.zakupy ADD CONSTRAINT zakupy_id_biura_fkey FOREIGN KEY (id_biura) REFERENCES public.biura(id_biura) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE public.zakupy ADD CONSTRAINT zakupy_id_lotu_do_fkey FOREIGN KEY (id_lotu_do) REFERENCES public.loty(id_lotu) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE public.zakupy ADD CONSTRAINT zakupy_id_lotu_z_fkey FOREIGN KEY (id_lotu_z) REFERENCES public.loty(id_lotu) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE public.zakupy ADD CONSTRAINT zakupy_id_oferty_fkey FOREIGN KEY (id_oferty) REFERENCES public.oferty(id_oferty) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(1, 1, 30, 9, 7, 8, '2022-07-10', '2022-07-20', 888.00, 2, 2, 1, '2022-01-05');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(4, 2, 3, 11, 1, 2, '2022-07-04', '2022-07-16', 888.00, 2, 2, 2, '2022-01-26');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(3, 3, 7, 8, 21, 22, '2022-08-01', '2022-08-09', 7456.00, 1, 1, 3, '2022-02-02');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(2, 4, 9, 10, 29, 30, '2022-08-15', '2022-08-24', 888.00, 2, 2, 4, '2021-12-27');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(4, 5, 14, 8, 13, 14, '2022-08-12', '2022-08-21', 888.00, 2, 2, 5, '2022-01-18');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(4, 3, 5, 7, 15, 16, '2022-07-01', '2022-07-09', 6555.00, 4, 4, 6, '2021-12-05');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(1, 7, 16, 10, 17, 18, '2022-07-30', '2022-08-09', 888.00, 3, 3, 7, '2022-02-04');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(3, 8, 26, 8, 2, 6, '2022-07-22', '2022-07-31', 888.00, 1, 1, 8, '2022-01-14');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(3, 9, 28, 7, 2, 7, '2022-07-15', '2022-07-23', 888.00, 2, 2, 9, '2022-01-03');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(1, 10, 19, 8, 27, 28, '2022-07-07', '2022-07-16', 888.00, 2, 2, 10, '2022-02-01');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(1, 1, 18, 7, 27, 30, '2022-02-09', '2022-02-16', 2912.00, 1, 1, 42, '2022-02-06');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(1, 1, 17, 7, 1, 2, '2022-02-09', '2022-02-16', 6456.00, 3, 3, 43, '2022-02-06');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(1, 1, 21, 7, 23, 24, '2022-02-09', '2022-02-16', 3026.00, 2, 2, 44, '2022-02-06');
+INSERT INTO public.zakupy (id_biura, id_klienta, id_oferty, liczba_nocy, id_lotu_do, id_lotu_z, poczatek_pobytu, koniec_pobytu, cena, liczba_biletow_do, liczba_biletow_z, id_transakcji, data_zakupu) VALUES(3, 2, 1, 3, 7, 10, '2022-02-09', '2022-02-12', 2100.00, 2, 2, 45, '2022-02-06');
+
+CREATE OR REPLACE VIEW public.spis_klientow
+AS SELECT klienci.id_klienta,
+    klienci.imie,
+    klienci.nazwisko,
+    klienci.portfel
+   FROM klienci;
+
+CREATE OR REPLACE VIEW public.spis_obslugi
+AS SELECT pracownicy.id_biura,
+    biura.nazwa AS nazwa_biura,
+    pracownicy.imie,
+    pracownicy.nazwisko,
+    pracownicy.suma_punktow / pracownicy.lliczba_opini AS opinia,
+    pracownicy.email
+   FROM pracownicy,
+    biura
+  WHERE pracownicy.id_biura = biura.id_biura AND pracownicy.stanowisko = 'obsługa'::text;
+
+CREATE OR REPLACE FUNCTION public.dochody_biura_do_dnia(id_biura_arg integer, data_arg date)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+suma INT;
+BEGIN
+SELECT SUM(cena) INTO suma
+FROM zakupy
+WHERE id_biura= id_biura_arg
+AND data_zakupu < data_arg;
+RETURN suma; 
+END; $function$
+;
+
+CREATE OR REPLACE FUNCTION public.dochody_biura_na_dzien(id_biura_arg integer, data_arg date)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+suma INT;
+BEGIN
+SELECT SUM(cena) INTO suma
+FROM zakupy
+WHERE id_biura= id_biura_arg
+AND data_zakupu = data_arg;
+RETURN suma; 
+END; $function$
+;
+
+CREATE OR REPLACE FUNCTION public.klientinfo(id_klienta_arg integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+suma INT;
+liczba_podrozy INT; 
+BEGIN
+SELECT COUNT(id_klienta) INTO liczba_podrozy
+FROM zakupy
+WHERE id_klienta= id_klienta_arg;
+SELECT sum(cena) INTO suma
+FROM zakupy
+WHERE id_klienta=id_klienta_arg;
+RETURN liczba_podrozy||' '||suma; 
+END; $function$
+;
+
+
+
+
+
+
+
+
