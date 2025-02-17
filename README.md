@@ -1,5 +1,6 @@
-### Hi there 👋
+## Hi there 👋
 
+Here you will find materials that I created myself or in cooperation during my studies of Mathematics at the Institute of Mathematics of the University of Wrocław. These are projects in the field of Statistics, Machine Learning and data processing. The projects are mostly simulations that are supposed to simply confirm the theory presented in lectures, but there are also those that present the application of theory and machine learning models to solve practical problems.
 <!--
 **kamilzaborniak/kamilzaborniak** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
